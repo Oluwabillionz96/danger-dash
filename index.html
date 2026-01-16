@@ -1,103 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <title>Danger Dash</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div id="gameContainer">
-    <!-- Main Menu Screen -->
-    <div id="mainMenu" class="screen active">
-      <h1>🏝️ DANGER DASH 🏝️</h1>
-      <div id="highScoreDisplay">High Score: 0 coins</div>
-      <div class="menu-buttons">
-        <button class="btn-primary" id="startGameBtn">START GAME</button>
-        <button class="btn-primary" id="helpBtn">HELP</button>
-        <button class="btn-secondary" id="resetScoreBtn">RESET HIGH SCORE</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Danger Dash</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="gameContainer">
+      <!-- Main Menu Screen -->
+      <div id="mainMenu" class="screen active">
+        <h1>🏝️ DANGER DASH 🏝️</h1>
+        <div class="menu-buttons">
+          <button class="btn-primary" id="startGameBtn">START GAME</button>
+          <button class="btn-primary" id="highScoresBtn">HIGH SCORES</button>
+          <button class="btn-primary" id="helpBtn">HELP</button>
+        </div>
+      </div>
+
+      <!-- Difficulty Selection Screen -->
+      <div id="difficultyMenu" class="screen">
+        <h2>Select Difficulty</h2>
+        <p style="text-align: center">Choose your challenge level</p>
+        <div class="difficulty-buttons">
+          <button class="btn-easy" id="easyBtn">EASY</button>
+          <button class="btn-normal" id="normalBtn">NORMAL</button>
+          <button class="btn-hard" id="hardBtn">HARD</button>
+        </div>
+        <div class="menu-buttons" style="margin-top: 30px">
+          <button class="btn-secondary" id="backFromDiffBtn">BACK</button>
+        </div>
+      </div>
+
+      <!-- Help Screen -->
+      <div id="helpMenu" class="screen">
+        <h2>How to Play</h2>
+        <p>
+          <strong>🎯 Objective:</strong> Jump between islands, collect coins,
+          and survive as long as possible!
+        </p>
+        <p><strong>🎮 Controls:</strong></p>
+        <p>• Click JUMP button or press SPACE to jump</p>
+        <p>• Press jump again in mid-air for a double jump (optional)</p>
+        <p>• Click PAUSE or press ESC/P to pause the game</p>
+        <p><strong>💰 Scoring:</strong></p>
+        <p>• Collect coins by running over them on islands</p>
+        <p>• The game speeds up as you progress</p>
+        <p>• Don't fall into the ocean!</p>
+        <p><strong>🎚️ Difficulty Levels:</strong></p>
+        <p>
+          • <strong>Easy:</strong> Slow start, gradual speed increase, lots of
+          coins
+        </p>
+        <p>• <strong>Normal:</strong> Moderate speed, balanced progression</p>
+        <p>
+          • <strong>Hard:</strong> Fast start, quick speed increase, fewer coins
+        </p>
+        <div class="menu-buttons">
+          <button class="btn-secondary" id="backFromHelpBtn">BACK</button>
+        </div>
+      </div>
+
+      <!-- High Scores Screen -->
+      <div id="highScoresMenu" class="screen">
+        <h2>🏆 HIGH SCORES 🏆</h2>
+        <div class="high-scores-container">
+          <div class="score-card easy-card">
+            <div class="score-header">
+              <span class="score-emoji">😊</span>
+              <span class="score-title">EASY</span>
+            </div>
+            <div class="score-value" id="easyHighScore">0 coins</div>
+          </div>
+          <div class="score-card normal-card">
+            <div class="score-header">
+              <span class="score-emoji">😐</span>
+              <span class="score-title">NORMAL</span>
+            </div>
+            <div class="score-value" id="normalHighScore">0 coins</div>
+          </div>
+          <div class="score-card hard-card">
+            <div class="score-header">
+              <span class="score-emoji">😈</span>
+              <span class="score-title">HARD</span>
+            </div>
+            <div class="score-value" id="hardHighScore">0 coins</div>
+          </div>
+        </div>
+        <div class="menu-buttons" style="margin-top: 30px">
+          <button class="btn-secondary" id="resetScoreBtn">
+            RESET ALL SCORES
+          </button>
+          <button class="btn-secondary" id="backFromScoresBtn">BACK</button>
+        </div>
+      </div>
+
+      <!-- Game Screen -->
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+      <div id="pauseOverlay">
+        <button id="pauseBtn" class="pause-icon-btn">⏸</button>
+      </div>
+      <div id="score">Coins: 0 | High Score: 0</div>
+      <div id="gameControls">
+        <button class="btn-jump" id="jumpBtn">JUMP</button>
+        <button class="btn-secondary" id="backBtn">BACK TO MENU</button>
+      </div>
+
+      <!-- Game Over Modal -->
+      <div id="gameOverModal" class="screen">
+        <h2>🏴‍☠️ GAME OVER! 🏴‍☠️</h2>
+        <div id="finalScore" style="text-align: center; margin: 20px 0">
+          <p style="font-size: 28px; color: #ffd700; font-weight: bold">
+            Coins Collected: 0
+          </p>
+          <p style="font-size: 24px; color: #764ba2; font-weight: bold">
+            Distance: 0 islands
+          </p>
+          <p style="font-size: 20px; color: #667eea">High Score: 0 coins</p>
+        </div>
+        <div class="menu-buttons">
+          <button class="btn-primary" id="restartBtn">PLAY AGAIN</button>
+          <button class="btn-secondary" id="menuFromGameOverBtn">
+            MAIN MENU
+          </button>
+        </div>
+      </div>
+
+      <!-- Reset Confirmation Modal -->
+      <div id="resetConfirmModal" class="screen">
+        <h2>⚠️ RESET HIGH SCORE?</h2>
+        <p
+          style="
+            text-align: center;
+            font-size: 20px;
+            color: #e74c3c;
+            margin: 30px 0;
+          "
+        >
+          Are you sure you want to reset your high score?
+        </p>
+        <p
+          style="
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+          "
+        >
+          This action cannot be undone!
+        </p>
+        <div class="menu-buttons">
+          <button class="btn-hard" id="confirmResetBtn">YES, RESET IT</button>
+          <button class="btn-secondary" id="cancelResetBtn">CANCEL</button>
+        </div>
       </div>
     </div>
-    
-    <!-- Difficulty Selection Screen -->
-    <div id="difficultyMenu" class="screen">
-      <h2>Select Difficulty</h2>
-      <p style="text-align: center;">Choose your challenge level</p>
-      <div class="difficulty-buttons">
-        <button class="btn-easy" id="easyBtn">EASY</button>
-        <button class="btn-normal" id="normalBtn">NORMAL</button>
-        <button class="btn-hard" id="hardBtn">HARD</button>
-      </div>
-      <div class="menu-buttons" style="margin-top: 30px;">
-        <button class="btn-secondary" id="backFromDiffBtn">BACK</button>
-      </div>
-    </div>
-    
-    <!-- Help Screen -->
-    <div id="helpMenu" class="screen">
-      <h2>How to Play</h2>
-      <p><strong>🎯 Objective:</strong> Jump between islands, collect coins, and survive as long as possible!</p>
-      <p><strong>🎮 Controls:</strong></p>
-      <p>• Click JUMP button or press SPACE to jump</p>
-      <p>• Press jump again in mid-air for a double jump (optional)</p>
-      <p>• Click PAUSE or press ESC/P to pause the game</p>
-      <p><strong>💰 Scoring:</strong></p>
-      <p>• Collect coins by running over them on islands</p>
-      <p>• The game speeds up as you progress</p>
-      <p>• Don't fall into the ocean!</p>
-      <p><strong>🎚️ Difficulty Levels:</strong></p>
-      <p>• <strong>Easy:</strong> Slow start, gradual speed increase, lots of coins</p>
-      <p>• <strong>Normal:</strong> Moderate speed, balanced progression</p>
-      <p>• <strong>Hard:</strong> Fast start, quick speed increase, fewer coins</p>
-      <div class="menu-buttons">
-        <button class="btn-secondary" id="backFromHelpBtn">BACK</button>
-      </div>
-    </div>
-    
-    <!-- Game Screen -->
-    <canvas id="gameCanvas" width="800" height="400"></canvas>
-    <div id="score">Coins: 0 | High Score: 0</div>
-    <div id="gameControls">
-      <button class="btn-jump" id="jumpBtn">JUMP</button>
-      <button class="btn-pause" id="pauseBtn">PAUSE</button>
-      <button class="btn-secondary" id="backBtn">BACK TO MENU</button>
-    </div>
-    
-    <!-- Game Over Modal -->
-    <div id="gameOverModal" class="screen">
-      <h2>🏴‍☠️ GAME OVER! 🏴‍☠️</h2>
-      <div id="finalScore" style="text-align: center; margin: 20px 0;">
-        <p style="font-size: 28px; color: #FFD700; font-weight: bold;">Coins Collected: 0</p>
-        <p style="font-size: 24px; color: #764ba2; font-weight: bold;">Distance: 0 islands</p>
-        <p style="font-size: 20px; color: #667eea;">High Score: 0 coins</p>
-      </div>
-      <div class="menu-buttons">
-        <button class="btn-primary" id="restartBtn">PLAY AGAIN</button>
-        <button class="btn-secondary" id="menuFromGameOverBtn">MAIN MENU</button>
-      </div>
-    </div>
-    
-    <!-- Reset Confirmation Modal -->
-    <div id="resetConfirmModal" class="screen">
-      <h2>⚠️ RESET HIGH SCORE?</h2>
-      <p style="text-align: center; font-size: 20px; color: #e74c3c; margin: 30px 0;">
-        Are you sure you want to reset your high score?
-      </p>
-      <p style="text-align: center; font-size: 18px; color: #666; margin-bottom: 30px;">
-        This action cannot be undone!
-      </p>
-      <div class="menu-buttons">
-        <button class="btn-hard" id="confirmResetBtn">YES, RESET IT</button>
-        <button class="btn-secondary" id="cancelResetBtn">CANCEL</button>
-      </div>
-    </div>
-  </div>
-  
-  <script src="config.js"></script>
-  <script src="renderer.js"></script>
-  <script src="game.js"></script>
-  <script src="ui.js"></script>
-</body>
+
+    <script src="config.js"></script>
+    <script src="renderer.js"></script>
+    <script src="game.js"></script>
+    <script src="ui.js"></script>
+  </body>
 </html>

@@ -7,6 +7,7 @@ const Renderer = {
   init(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext("2d");
+    this.isMobile = false;
 
     // Make canvas responsive
     this.resizeCanvas();
@@ -26,15 +27,17 @@ const Renderer = {
     const container = this.canvas.parentElement;
     const containerWidth = container.offsetWidth;
 
-    // On mobile, make canvas much bigger and fill most of the screen
+    // On mobile, make canvas fullscreen
     if (window.innerWidth <= 768) {
-      const maxWidth = Math.min(containerWidth - 20, window.innerWidth - 20);
-      const height = Math.min(window.innerHeight * 0.55, maxWidth * 0.7); // Much taller on mobile
+      const maxWidth = window.innerWidth;
+      const height = window.innerHeight;
       this.canvas.style.width = maxWidth + "px";
       this.canvas.style.height = height + "px";
+      this.isMobile = true;
     } else {
       this.canvas.style.width = "800px";
       this.canvas.style.height = "400px";
+      this.isMobile = false;
     }
   },
 
@@ -309,28 +312,31 @@ const Renderer = {
       this.ctx.translate(coin.x, coin.y);
       this.ctx.rotate(coin.rotation);
 
+      // Keep coins same size on mobile as desktop
+      const coinSize = coin.radius;
+
       // Coin
       this.ctx.fillStyle = "#FFD700";
       this.ctx.beginPath();
-      this.ctx.arc(0, 0, coin.radius, 0, Math.PI * 2);
+      this.ctx.arc(0, 0, coinSize, 0, Math.PI * 2);
       this.ctx.fill();
 
       // Coin shine
       this.ctx.fillStyle = "#FFF59D";
       this.ctx.beginPath();
-      this.ctx.arc(-3, -3, 3, 0, Math.PI * 2);
+      this.ctx.arc(-3, -3, coinSize * 0.3, 0, Math.PI * 2);
       this.ctx.fill();
 
       // Coin border
       this.ctx.strokeStyle = "#FFA000";
       this.ctx.lineWidth = 2;
       this.ctx.beginPath();
-      this.ctx.arc(0, 0, coin.radius, 0, Math.PI * 2);
+      this.ctx.arc(0, 0, coinSize, 0, Math.PI * 2);
       this.ctx.stroke();
 
       // Dollar sign
       this.ctx.fillStyle = "#FFA000";
-      this.ctx.font = "bold 12px Arial";
+      this.ctx.font = `bold ${coinSize * 1.2}px Arial`;
       this.ctx.textAlign = "center";
       this.ctx.textBaseline = "middle";
       this.ctx.fillText("$", 0, 0);
@@ -370,56 +376,69 @@ const Renderer = {
 
     const badge = badges[difficulty];
 
+    // Reduced height badges with better spacing
+    const badgeWidth = this.isMobile ? 160 : 120;
+    const badgeHeight = this.isMobile ? 30 : 32;
+    const fontSize = this.isMobile ? 14 : 14;
+    const emojiSize = this.isMobile ? 18 : 20;
+
     // Badge background
     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(10, 10, 120, 40);
+    ctx.fillRect(10, 10, badgeWidth, badgeHeight);
 
     ctx.fillStyle = badge.color;
-    ctx.fillRect(12, 12, 116, 36);
+    ctx.fillRect(12, 12, badgeWidth - 4, badgeHeight - 4);
 
-    // Badge text
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 16px Arial";
+    // Emoji with spacing
+    ctx.font = `${emojiSize}px Arial`;
     ctx.textAlign = "left";
-    ctx.fillText(badge.text, 50, 33);
+    ctx.fillText(badge.emoji, 18, this.isMobile ? 27 : 28);
 
-    // Emoji
-    ctx.font = "24px Arial";
-    ctx.fillText(badge.emoji, 20, 36);
+    // Badge text with spacing from emoji
+    ctx.fillStyle = "#fff";
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.textAlign = "left";
+    ctx.fillText(badge.text, this.isMobile ? 48 : 45, this.isMobile ? 27 : 28);
   },
 
   drawScore(coins) {
     const ctx = this.ctx;
 
+    // Reduced height score badge
+    const scoreWidth = this.isMobile ? 140 : 120;
+    const scoreHeight = this.isMobile ? 35 : 32;
+    const coinRadius = this.isMobile ? 10 : 10;
+    const fontSize = this.isMobile ? 16 : 16;
+
     // Score background
     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(this.canvas.width - 130, 10, 120, 40);
+    ctx.fillRect(this.canvas.width - scoreWidth - 10, 10, scoreWidth, scoreHeight);
 
     ctx.fillStyle = "#FFD700";
-    ctx.fillRect(this.canvas.width - 128, 12, 116, 36);
+    ctx.fillRect(this.canvas.width - scoreWidth - 8, 12, scoreWidth - 4, scoreHeight - 4);
 
     // Coin icon
     ctx.fillStyle = "#FFA500";
     ctx.beginPath();
-    ctx.arc(this.canvas.width - 105, 30, 12, 0, Math.PI * 2);
+    ctx.arc(this.canvas.width - scoreWidth + 15, 27, coinRadius, 0, Math.PI * 2);
     ctx.fill();
 
     // Coin shine
     ctx.fillStyle = "#FFEB3B";
     ctx.beginPath();
-    ctx.arc(this.canvas.width - 108, 27, 4, 0, Math.PI * 2);
+    ctx.arc(this.canvas.width - scoreWidth + 12, 24, 3, 0, Math.PI * 2);
     ctx.fill();
 
     // Dollar sign
     ctx.fillStyle = "#FFA500";
-    ctx.font = "bold 16px Arial";
+    ctx.font = `bold ${fontSize - 2}px Arial`;
     ctx.textAlign = "center";
-    ctx.fillText("$", this.canvas.width - 105, 35);
-
+    ctx.fillText("$", this.canvas.width - scoreWidth + 15, 31);
+    
     // Score text
     ctx.fillStyle = "#000";
-    ctx.font = "bold 20px Arial";
+    ctx.font = `bold ${fontSize + 2}px Arial`;
     ctx.textAlign = "left";
-    ctx.fillText(coins.toString(), this.canvas.width - 85, 35);
+    ctx.fillText(coins.toString(), this.canvas.width - scoreWidth + 35, 30);
   },
 };

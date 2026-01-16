@@ -90,6 +90,41 @@ canvas {
   background: #4a90e2;
   display: none;
   animation: slideIn 0.5s ease-out;
+  position: relative;
+}
+
+#pauseOverlay {
+  position: absolute;
+  top: 10px;
+  left: 180px;
+  z-index: 100;
+  display: none;
+}
+
+.pause-icon-btn {
+  background: rgba(0, 0, 0, 0.6);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 22px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.pause-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.pause-icon-btn:active {
+  transform: scale(0.95);
 }
 
 #score {
@@ -299,6 +334,7 @@ button:active {
   gap: 15px;
   justify-content: center;
   animation: slideIn 0.5s ease-out;
+  flex-wrap: wrap;
 }
 
 #gameOverModal {
@@ -351,24 +387,35 @@ button:active {
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
   body {
-    padding: 10px;
+    padding: 0;
+    margin: 0;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
-  }
-
-  canvas {
-    width: 100% !important;
-    height: auto !important;
-    max-width: 100vw;
-    min-height: 50vh;
-    border: 3px solid #fff;
-    border-radius: 10px;
+    overflow: hidden;
   }
 
   #gameContainer {
-    width: 90vw;
-    max-width: 90vw;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw;
+    min-height: 100vh;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
   }
 
   .screen {
@@ -377,6 +424,16 @@ button:active {
     max-width: 90vw;
     width: 90vw;
     margin: auto;
+  }
+
+  #pauseOverlay {
+    display: none !important;
+  }
+
+  .pause-icon-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
   }
 
   .screen h1 {
@@ -429,24 +486,29 @@ button:active {
   }
 
   #gameControls {
-    flex-wrap: wrap;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0 20px;
+    max-width: 300px;
+    width: auto;
     gap: 12px;
-    margin-top: 15px;
-    width: 100%;
   }
 
   #gameControls button {
-    flex: 1 1 calc(50% - 6px);
-    min-width: 140px;
     padding: 18px 25px;
     font-size: 18px;
   }
 
-  #gameControls #jumpBtn,
-  #gameControls #pauseBtn {
-    flex: 1 1 calc(50% - 6px);
+  #gameControls #jumpBtn {
+    display: none;
   }
 
+  #gameControls #backBtn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
   #gameControls #backBtn {
     flex: 1 1 100%;
   }
@@ -508,12 +570,89 @@ button:active {
   }
 
   #gameControls button {
-    flex: 1 1 calc(50% - 6px);
+    flex: 1 1 100%;
     padding: 16px 20px;
     font-size: 16px;
   }
 
-  canvas {
-    min-height: 45vh;
+  #gameControls #jumpBtn {
+    display: none;
   }
+
+  #gameControls #backBtn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  canvas {
+    min-height: 100vh;
+    height: 100vh !important;
+  }
+
+  .pause-icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    border: 2px solid #fff;
+  }
+}
+
+/* High Scores Screen Styles */
+.high-scores-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.score-card {
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.score-card:hover {
+  transform: translateY(-3px);
+}
+
+.easy-card {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.normal-card {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.hard-card {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.score-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.score-emoji {
+  font-size: 32px;
+}
+
+.score-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.score-value {
+  font-size: 36px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
 }

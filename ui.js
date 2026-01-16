@@ -9,6 +9,7 @@ const UI = {
   setupMenuButtons() {
     const buttons = [
       { id: "startGameBtn", action: () => this.showDifficultyScreen() },
+      { id: "highScoresBtn", action: () => this.showHighScoresScreen() },
       { id: "helpBtn", action: () => this.showHelpScreen() },
       { id: "resetScoreBtn", action: () => this.showResetConfirmation() },
       { id: "confirmResetBtn", action: () => this.resetHighScore() },
@@ -18,6 +19,7 @@ const UI = {
       { id: "hardBtn", action: () => this.startGame("hard") },
       { id: "backFromDiffBtn", action: () => this.showMainMenu() },
       { id: "backFromHelpBtn", action: () => this.showMainMenu() },
+      { id: "backFromScoresBtn", action: () => this.showMainMenu() },
     ];
 
     buttons.forEach((btn) => {
@@ -36,13 +38,6 @@ const UI = {
         id: "jumpBtn",
         action: () => {
           if (Game.state === "playing") Game.jump();
-        },
-      },
-      {
-        id: "pauseBtn",
-        action: () => {
-          if (Game.state === "playing") Game.pause();
-          else if (Game.state === "paused") Game.resume();
         },
       },
       { id: "backBtn", action: () => this.showMainMenu() },
@@ -70,42 +65,79 @@ const UI = {
         btn.action();
       });
     });
+
+    // Special handling for pause button
+    const pauseBtn = document.getElementById("pauseBtn");
+    const handlePause = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (Game.state === "playing") {
+        Game.pause();
+        pauseBtn.textContent = "▶";
+      } else if (Game.state === "paused") {
+        Game.resume();
+        pauseBtn.textContent = "⏸";
+      }
+    };
+    pauseBtn.addEventListener("click", handlePause);
+    pauseBtn.addEventListener("touchstart", handlePause);
   },
 
   showMainMenu() {
     document.getElementById("mainMenu").classList.add("active");
     document.getElementById("difficultyMenu").classList.remove("active");
     document.getElementById("helpMenu").classList.remove("active");
+    document.getElementById("highScoresMenu").classList.remove("active");
     document.getElementById("gameOverModal").classList.remove("active");
     document.getElementById("gameCanvas").style.display = "none";
+    document.getElementById("pauseOverlay").style.display = "none";
     document.getElementById("score").style.display = "none";
     document.getElementById("gameControls").style.display = "none";
-    document.getElementById(
-      "highScoreDisplay"
-    ).textContent = `High Score: ${Game.highScore} coins`;
   },
 
   showDifficultyScreen() {
     document.getElementById("mainMenu").classList.remove("active");
     document.getElementById("difficultyMenu").classList.add("active");
     document.getElementById("helpMenu").classList.remove("active");
+    document.getElementById("highScoresMenu").classList.remove("active");
   },
 
   showHelpScreen() {
     document.getElementById("mainMenu").classList.remove("active");
     document.getElementById("difficultyMenu").classList.remove("active");
     document.getElementById("helpMenu").classList.add("active");
+    document.getElementById("highScoresMenu").classList.remove("active");
+  },
+
+  showHighScoresScreen() {
+    document.getElementById("mainMenu").classList.remove("active");
+    document.getElementById("difficultyMenu").classList.remove("active");
+    document.getElementById("helpMenu").classList.remove("active");
+    document.getElementById("highScoresMenu").classList.add("active");
+
+    // Update high scores display
+    document.getElementById(
+      "easyHighScore"
+    ).textContent = `${Game.highScores.easy} coins`;
+    document.getElementById(
+      "normalHighScore"
+    ).textContent = `${Game.highScores.normal} coins`;
+    document.getElementById(
+      "hardHighScore"
+    ).textContent = `${Game.highScores.hard} coins`;
   },
 
   startGame(difficulty) {
     document.getElementById("mainMenu").classList.remove("active");
     document.getElementById("difficultyMenu").classList.remove("active");
     document.getElementById("helpMenu").classList.remove("active");
+    document.getElementById("highScoresMenu").classList.remove("active");
     document.getElementById("gameCanvas").style.display = "block";
+    document.getElementById("pauseOverlay").style.display = "block";
     document.getElementById("score").style.display = "none";
     document.getElementById("gameControls").style.display = "flex";
     document.getElementById("gameOverModal").classList.remove("active");
-    document.getElementById("pauseBtn").textContent = "PAUSE";
+    document.getElementById("pauseBtn").textContent = "⏸";
 
     Game.start(difficulty);
   },
@@ -139,10 +171,10 @@ const UI = {
   },
 
   resetHighScore() {
-    localStorage.removeItem("dangerDashHighScore");
-    Game.highScore = 0;
-    document.getElementById("highScoreDisplay").textContent =
-      "High Score: 0 coins";
+    localStorage.removeItem("dangerDashHighScoreEasy");
+    localStorage.removeItem("dangerDashHighScoreNormal");
+    localStorage.removeItem("dangerDashHighScoreHard");
+    Game.highScores = { easy: 0, normal: 0, hard: 0 };
     this.hideResetConfirmation();
   },
 };
