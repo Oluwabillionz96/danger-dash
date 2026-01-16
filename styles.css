@@ -93,40 +93,6 @@ canvas {
   position: relative;
 }
 
-#pauseOverlay {
-  position: absolute;
-  top: 10px;
-  left: 180px;
-  z-index: 100;
-  display: none;
-}
-
-.pause-icon-btn {
-  background: rgba(0, 0, 0, 0.6);
-  border: 3px solid #fff;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  font-size: 22px;
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  transition: all 0.3s ease;
-  padding: 0;
-}
-
-.pause-icon-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
-  transform: scale(1.1);
-}
-
-.pause-icon-btn:active {
-  transform: scale(0.95);
-}
-
 #score {
   color: white;
   font-size: 28px;
@@ -337,6 +303,10 @@ button:active {
   flex-wrap: wrap;
 }
 
+#gameControls button {
+  min-width: 120px;
+}
+
 #gameOverModal {
   position: fixed;
   top: 50%;
@@ -426,16 +396,6 @@ button:active {
     margin: auto;
   }
 
-  #pauseOverlay {
-    display: none !important;
-  }
-
-  .pause-icon-btn {
-    width: 35px;
-    height: 35px;
-    font-size: 18px;
-  }
-
   .screen h1 {
     font-size: 36px;
     margin-bottom: 20px;
@@ -501,7 +461,8 @@ button:active {
     font-size: 18px;
   }
 
-  #gameControls #jumpBtn {
+  #gameControls #jumpBtn,
+  #gameControls #pauseBtn {
     display: none;
   }
 
@@ -587,13 +548,6 @@ button:active {
   canvas {
     min-height: 100vh;
     height: 100vh !important;
-  }
-
-  .pause-icon-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 16px;
-    border: 2px solid #fff;
   }
 }
 

@@ -40,6 +40,19 @@ const UI = {
           if (Game.state === "playing") Game.jump();
         },
       },
+      {
+        id: "pauseBtn",
+        action: (e) => {
+          e.stopPropagation();
+          if (Game.state === "playing") {
+            Game.pause();
+            document.getElementById("pauseBtn").textContent = "RESUME";
+          } else if (Game.state === "paused") {
+            Game.resume();
+            document.getElementById("pauseBtn").textContent = "PAUSE";
+          }
+        },
+      },
       { id: "backBtn", action: () => this.showMainMenu() },
       {
         id: "restartBtn",
@@ -62,25 +75,9 @@ const UI = {
       element.addEventListener("click", btn.action);
       element.addEventListener("touchstart", (e) => {
         e.preventDefault();
-        btn.action();
+        btn.action(e);
       });
     });
-
-    // Special handling for pause button
-    const pauseBtn = document.getElementById("pauseBtn");
-    const handlePause = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      if (Game.state === "playing") {
-        Game.pause();
-        pauseBtn.textContent = "▶";
-      } else if (Game.state === "paused") {
-        Game.resume();
-        pauseBtn.textContent = "⏸";
-      }
-    };
-    pauseBtn.addEventListener("click", handlePause);
-    pauseBtn.addEventListener("touchstart", handlePause);
   },
 
   showMainMenu() {
@@ -90,7 +87,6 @@ const UI = {
     document.getElementById("highScoresMenu").classList.remove("active");
     document.getElementById("gameOverModal").classList.remove("active");
     document.getElementById("gameCanvas").style.display = "none";
-    document.getElementById("pauseOverlay").style.display = "none";
     document.getElementById("score").style.display = "none";
     document.getElementById("gameControls").style.display = "none";
   },
@@ -133,11 +129,10 @@ const UI = {
     document.getElementById("helpMenu").classList.remove("active");
     document.getElementById("highScoresMenu").classList.remove("active");
     document.getElementById("gameCanvas").style.display = "block";
-    document.getElementById("pauseOverlay").style.display = "block";
     document.getElementById("score").style.display = "none";
     document.getElementById("gameControls").style.display = "flex";
     document.getElementById("gameOverModal").classList.remove("active");
-    document.getElementById("pauseBtn").textContent = "⏸";
+    document.getElementById("pauseBtn").textContent = "PAUSE";
 
     Game.start(difficulty);
   },
