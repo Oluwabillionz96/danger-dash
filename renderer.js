@@ -71,7 +71,7 @@ const Renderer = {
 
   drawPlayer(player) {
     const ctx = this.ctx;
-    const time = Date.now() * 0.015;
+    const time = Date.now() * 0.025; // Faster animation speed (was 0.015)
 
     // Shadow
     ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
@@ -84,8 +84,8 @@ const Renderer = {
     const armCycle = player.onIsland ? Math.cos(time) : 0;
 
     // When in air, use fixed pose
-    const legRotation = player.onIsland ? legCycle * 0.4 : 0.2;
-    const armRotation = player.onIsland ? armCycle * 0.5 : -0.3;
+    const legRotation = player.onIsland ? legCycle * 0.5 : 0.2; // Increased from 0.4 to 0.5
+    const armRotation = player.onIsland ? armCycle * 0.6 : -0.3; // Increased from 0.5 to 0.6
 
     // BACK LEG
     ctx.save();

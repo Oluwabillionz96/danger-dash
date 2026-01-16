@@ -15,24 +15,24 @@ const CONFIG = {
   
   DIFFICULTY: {
     easy: {
-      startSpeed: 1.8,
-      speedIncrease: 0.15,
+      startSpeed: 2.5,
+      speedIncrease: 0.2,
       speedIncreaseInterval: 10,
       coinFrequency: 25,
       islandGapMin: 50,
       islandGapMax: 80
     },
     normal: {
-      startSpeed: 2.2,
-      speedIncrease: 0.2,
+      startSpeed: 3.2,
+      speedIncrease: 0.25,
       speedIncreaseInterval: 8,
       coinFrequency: 30,
       islandGapMin: 60,
       islandGapMax: 100
     },
     hard: {
-      startSpeed: 3.0,
-      speedIncrease: 0.3,
+      startSpeed: 4.0,
+      speedIncrease: 0.35,
       speedIncreaseInterval: 5,
       coinFrequency: 40,
       islandGapMin: 70,
